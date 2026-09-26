@@ -1,40 +1,64 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DatabaseContext } from '../context/DatabaseContext';
+import { AuthContext } from '../context/AuthContext';
+import api from '../api';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const { members, setMembers } = useContext(DatabaseContext);
+  const { user } = useContext(AuthContext);
 
-  const handleRegister = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'MEMBER') navigate('/member');
+      else if (user.role === 'TREASURER') navigate('/treasurer');
+      else if (user.role === 'SECRETARY') navigate('/secretary');
+    }
+  }, [user, navigate]);
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // We get the form elements directly for a quick prototype insert
+    // We get the form elements directly
     const form = e.target as HTMLFormElement;
     const name = (form.elements[0] as HTMLInputElement).value;
+    const idNumber = (form.elements[2] as HTMLInputElement).value;
     const phone = (form.elements[3] as HTMLInputElement).value;
     const email = (form.elements[4] as HTMLInputElement).value;
-    const type = (form.elements[6] as HTMLSelectElement).value;
+    const member_type = (form.elements[6] as HTMLSelectElement).value;
     const zone = (form.elements[7] as HTMLSelectElement).value;
+    const password = (form.elements[8] as HTMLInputElement).value;
+    const confirmPassword = (form.elements[9] as HTMLInputElement).value;
+    
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    
+    const nameParts = name.split(' ');
+    const first_name = nameParts[0];
+    const last_name = nameParts.slice(1).join(' ');
+    // Use the ID Number as their unique username for logging in
+    const username = idNumber;
 
-    const newMember = {
-      id: Date.now(),
-      memberNo: null,
-      name,
-      zone,
-      type,
-      status: 'PENDING_TREASURER',
-      role: 'MEMBER',
-      phone,
-      email,
-      spouse_name: '',
-      dependents: [],
-      guardians: []
-    };
-
-    setMembers([...members, newMember]);
-    alert('Registration Submitted! Please sign in to the platform.');
-    navigate('/login');
+    try {
+      await api.post('/auth/register/', {
+        username,
+        password,
+        first_name,
+        last_name,
+        email,
+        phone,
+        member_type,
+        zone
+      });
+      alert('Registration Submitted! Please sign in using your ID Number (' + username + ') as your username.');
+      navigate('/login');
+    } catch (err) {
+      console.error(err);
+      alert('Registration failed. Username or email might be taken.');
+    }
   };
 
   return (

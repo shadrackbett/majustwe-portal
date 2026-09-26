@@ -1,0 +1,21 @@
+﻿import os, django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+django.setup()
+from users.models import User
+from welfare.models import MemberProfile, Case, Contribution, MinuteRecord
+User.objects.all().delete()
+u1=User.objects.create_user('sarah', 'sarah@example.com', 'password', first_name='Sarah', last_name='Ochieng', role='SECRETARY', zone='Tsimba-Tiwi')
+MemberProfile.objects.create(user=u1, status='ACTIVE', member_id=1, gender='F', phone='0700111222', member_type='FULL')
+u2=User.objects.create_user('david', 'david@example.com', 'password', first_name='David', last_name='Mutisya', role='MEMBER', zone='Ngombeni-Waa')
+MemberProfile.objects.create(user=u2, status='INACTIVE', member_id=2, gender='M', phone='0711222333', member_type='ASSOCIATE')
+u3=User.objects.create_user('jane', 'jane@example.com', 'password', first_name='Jane', last_name='Kamau', role='TREASURER', zone='Tsimba-Tiwi')
+MemberProfile.objects.create(user=u3, status='ACTIVE', member_id=3, gender='F', phone='0733444555', member_type='FULL')
+u4=User.objects.create_user('alice', 'alice@example.com', 'password', first_name='Alice', last_name='Waithera', role='MEMBER', zone='Ngombeni-Waa')
+MemberProfile.objects.create(user=u4, status='ACTIVE_INCOMPLETE', gender='F', phone='0755666777', member_type='FULL')
+c1=Case.objects.create(title='Bereavement: Mr. Smith', required_amount=500, is_active=True)
+c2=Case.objects.create(title='Medical: Mrs. Ochieng', required_amount=1000, is_active=True)
+Contribution.objects.create(member=u1.welfare_profile, welfare_case=c1, amount_paid=500, is_fully_paid=True)
+Contribution.objects.create(member=u1.welfare_profile, welfare_case=c2, amount_paid=0, is_fully_paid=False)
+Contribution.objects.create(member=u2.welfare_profile, welfare_case=c1, amount_paid=250, is_fully_paid=False)
+MinuteRecord.objects.create(title='Annual General Meeting 2026', excerpt='Discussed the increment of the emergency kitty...', created_by=u1)
+print('Seed completed!')

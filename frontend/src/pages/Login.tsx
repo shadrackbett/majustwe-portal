@@ -1,27 +1,42 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { DatabaseContext } from '../context/DatabaseContext';
+import api from '../api';
+import jwt_decode from 'jwt-decode';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
-  const { members } = useContext(DatabaseContext);
+  const { user, login } = useContext(AuthContext);
   
-  // Default to the first member in the DB
-  const [selectedUserId, setSelectedUserId] = useState<number>(members[0]?.id || 1);
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'MEMBER') navigate('/member');
+      else if (user.role === 'TREASURER') navigate('/treasurer');
+      else if (user.role === 'SECRETARY') navigate('/secretary');
+    }
+  }, [user, navigate]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
-    const user = members.find(m => m.id === selectedUserId);
-    if(!user) return;
-
-    login(user.name, user.id, user.role);
-    
-    if (user.role === 'MEMBER') navigate('/member');
-    else if (user.role === 'TREASURER') navigate('/treasurer');
-    else if (user.role === 'SECRETARY') navigate('/secretary');
+    try {
+      const response = await api.post('/auth/token/', { username, password });
+      const token = response.data.access;
+      const decoded: any = jwt_decode(token);
+      
+      login(token, decoded.user_id, decoded.role, decoded.username);
+      
+      if (decoded.role === 'MEMBER') navigate('/member');
+      else if (decoded.role === 'TREASURER') navigate('/treasurer');
+      else if (decoded.role === 'SECRETARY') navigate('/secretary');
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Invalid username or password');
+    }
   };
 
   return (
@@ -34,18 +49,15 @@ const Login: React.FC = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           
-          <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
-            <p className="text-sm font-bold text-yellow-800 mb-2">Simulate Login (Dev Mode)</p>
-            <p className="text-xs text-yellow-700 mb-4">Select an existing account from the database to log in as.</p>
-            <select 
-              value={selectedUserId} 
-              onChange={(e) => setSelectedUserId(Number(e.target.value))} 
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-majustwe-lime focus:border-majustwe-lime sm:text-sm rounded-md border"
-            >
-              {members.map(m => (
-                <option key={m.id} value={m.id}>{m.name} ({m.role}) - {m.status}</option>
-              ))}
-            </select>
+          {error && <div className="text-red-600 bg-red-100 p-3 rounded-lg text-sm text-center">{error}</div>}
+
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <input type="text" required value={username} onChange={e => setUsername(e.target.value)} className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-majustwe-lime focus:border-majustwe-lime focus:z-10 sm:text-sm" placeholder="Username or ID Number" />
+            </div>
+            <div>
+              <input type="password" required value={password} onChange={e => setPassword(e.target.value)} className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-majustwe-lime focus:border-majustwe-lime focus:z-10 sm:text-sm" placeholder="Password" />
+            </div>
           </div>
 
           <div>

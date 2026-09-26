@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from users.models import User
-from welfare.models import MemberProfile, Case, Contribution, Guardian, Dependent
+from welfare.models import MemberProfile, Case, Contribution, Guardian, Dependent, MinuteRecord
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,3 +41,9 @@ class ContributionSerializer(serializers.ModelSerializer):
         model = Contribution
         fields = '__all__'
         read_only_fields = ('date_paid',)
+
+class MinuteRecordSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(source='created_by.get_full_name', read_only=True)
+    class Meta:
+        model = MinuteRecord
+        fields = '__all__'

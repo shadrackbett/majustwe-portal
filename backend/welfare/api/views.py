@@ -1,15 +1,27 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions
+from django.db.models import Sum
+from datetime import timedelta
+from django.utils import timezone
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
 from users.models import User
-from welfare.models import MemberProfile, Case, Contribution, Guardian, Dependent
-from .serializers import UserSerializer, MemberProfileSerializer, CaseSerializer, ContributionSerializer
+from welfare.models import MemberProfile, Case, Contribution, Guardian, Dependent, MinuteRecord
+from .serializers import UserSerializer, MemberProfileSerializer, CaseSerializer, ContributionSerializer, MinuteRecordSerializer
 from .permissions import IsTreasurer, IsSecretary, IsExecutive, IsGenericOfficial, IsOwnerOrExecutive
 
 class MemberProfileViewSet(viewsets.ModelViewSet):
     queryset = MemberProfile.objects.all()
     serializer_class = MemberProfileSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return MemberProfile.objects.none()
+        if user.is_executive():
+            return MemberProfile.objects.all()
+        return MemberProfile.objects.filter(user=user)
     
     def get_permissions(self):
         if self.action in ['secretary_approve', 'secretary_reject']:
@@ -17,10 +29,28 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
         elif self.action in ['treasurer_approve']:
             permission_classes = [IsTreasurer]
         elif self.action in ['list']:
-            permission_classes = [IsExecutive | IsGenericOfficial]
+            permission_classes = [permissions.IsAuthenticated]
         else:
             permission_classes = [IsOwnerOrExecutive]
         return [permission() for permission in permission_classes]
+
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def submit_mpesa(self, request, pk=None):
+        contribution = self.get_object()
+        
+        # Only allow if it belongs to them (or they are an admin)
+        if not request.user.is_executive() and contribution.member.user != request.user:
+            return Response({'error': 'Unauthorized'}, status=403)
+            
+        mpesa_code = request.data.get('mpesa_reference')
+        if not mpesa_code:
+            return Response({'error': 'M-Pesa code required'}, status=400)
+            
+        contribution.mpesa_reference = mpesa_code.upper()
+        contribution.save()
+        
+        return Response({'status': 'M-Pesa reference saved'})
 
     @action(detail=True, methods=['post'], permission_classes=[IsTreasurer])
     def treasurer_approve(self, request, pk=None):
@@ -30,46 +60,49 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
             
         profile.registration_fee_paid = request.data.get('registration_fee_paid', True)
         profile.emergency_kitty_paid = request.data.get('emergency_kitty_paid', True)
-        profile.status = MemberProfile.Status.PENDING_DETAILS
+        profile.status = MemberProfile.Status.ACTIVE_INCOMPLETE
         profile.save()
-        
-        # Here we would send an email with a link for Step 3
-        # generate_and_email_pdf.delay(profile.id, profile.user.email) or similar link task
         
         return Response(MemberProfileSerializer(profile).data)
 
     @action(detail=True, methods=['post'], permission_classes=[IsOwnerOrExecutive])
     def submit_details(self, request, pk=None):
         profile = self.get_object()
-        if profile.status != MemberProfile.Status.PENDING_DETAILS:
+        # Allows submitting details if ACTIVE_INCOMPLETE or ACTIVE
+        if profile.status not in [MemberProfile.Status.ACTIVE_INCOMPLETE, MemberProfile.Status.ACTIVE]:
             return Response({'error': 'Profile not in correct state'}, status=status.HTTP_400_BAD_REQUEST)
             
         # Parse extra details
         profile.spouse_name = request.data.get('spouse_name', profile.spouse_name)
         profile.spouse_phone = request.data.get('spouse_phone', profile.spouse_phone)
         
-        # Save Guardians
-        guardians = request.data.get('guardians', [])
-        if len(guardians) > 2: return Response({'error': 'Max 2 guardians'}, status=400)
-        Guardian.objects.filter(profile=profile).delete()
-        for g in guardians:
-            Guardian.objects.create(profile=profile, **g)
+        # Save Guardians - only if they don't exist yet, or if the user is an Executive
+        existing_guardians_count = Guardian.objects.filter(profile=profile).count()
+        is_executive = request.user.is_executive()
+        if existing_guardians_count == 0 or is_executive:
+            guardians = request.data.get('guardians')
+            if guardians is not None:
+                if len(guardians) > 2: return Response({'error': 'Max 2 guardians'}, status=400)
+                Guardian.objects.filter(profile=profile).delete()
+                for g in guardians:
+                    Guardian.objects.create(profile=profile, **g)
             
         # Save Dependents
-        dependents = request.data.get('dependents', [])
-        if len(dependents) > 4: return Response({'error': 'Max 4 dependents'}, status=400)
-        Dependent.objects.filter(profile=profile).delete()
-        for d in dependents:
-            Dependent.objects.create(profile=profile, **d)
+        dependents = request.data.get('dependents')
+        if dependents is not None:
+            if len(dependents) > 4: return Response({'error': 'Max 4 dependents'}, status=400)
+            Dependent.objects.filter(profile=profile).delete()
+            for d in dependents:
+                Dependent.objects.create(profile=profile, **d)
             
-        profile.status = MemberProfile.Status.PENDING_SECRETARY
+        # Stay as ACTIVE_INCOMPLETE until Secretary generates member ID
         profile.save()
         return Response(MemberProfileSerializer(profile).data)
 
     @action(detail=True, methods=['post'], permission_classes=[IsSecretary])
     def secretary_approve(self, request, pk=None):
         profile = self.get_object()
-        if profile.status != MemberProfile.Status.PENDING_SECRETARY:
+        if profile.status != MemberProfile.Status.ACTIVE_INCOMPLETE:
             return Response({'error': 'Profile not in correct state'}, status=status.HTTP_400_BAD_REQUEST)
             
         profile.status = MemberProfile.Status.ACTIVE
@@ -80,11 +113,11 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[IsSecretary])
     def secretary_reject(self, request, pk=None):
         profile = self.get_object()
-        if profile.status != MemberProfile.Status.PENDING_SECRETARY:
+        if profile.status != MemberProfile.Status.ACTIVE_INCOMPLETE:
             return Response({'error': 'Profile not in correct state'}, status=status.HTTP_400_BAD_REQUEST)
             
         profile.status = MemberProfile.Status.REJECTED
-        profile.rejection_reason = request.data.get('rejection_reason', 'Rejected by Secretary')
+        profile.rejection_reason = request.data.get('rejection_reason', 'Details rejected by Secretary')
         profile.save()
         return Response(MemberProfileSerializer(profile).data)
 
@@ -147,6 +180,24 @@ class ContributionViewSet(viewsets.ModelViewSet):
             return Contribution.objects.all()
         return Contribution.objects.filter(member__user=user)
 
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def submit_mpesa(self, request, pk=None):
+        contribution = self.get_object()
+        
+        # Only allow if it belongs to them (or they are an admin)
+        if not request.user.is_executive() and contribution.member.user != request.user:
+            return Response({'error': 'Unauthorized'}, status=403)
+            
+        mpesa_code = request.data.get('mpesa_reference')
+        if not mpesa_code:
+            return Response({'error': 'M-Pesa code required'}, status=400)
+            
+        contribution.mpesa_reference = mpesa_code.upper()
+        contribution.save()
+        
+        return Response({'status': 'M-Pesa reference saved'})
+
     @action(detail=True, methods=['post'], permission_classes=[IsTreasurer])
     def mark_paid(self, request, pk=None):
         contribution = self.get_object()
@@ -156,3 +207,17 @@ class ContributionViewSet(viewsets.ModelViewSet):
         contribution.date_paid = timezone.now()
         contribution.save()
         return Response(ContributionSerializer(contribution).data)
+
+class MinuteRecordViewSet(viewsets.ModelViewSet):
+    queryset = MinuteRecord.objects.all().order_by('-date')
+    serializer_class = MinuteRecordSerializer
+    
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            permission_classes = [IsSecretary]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)

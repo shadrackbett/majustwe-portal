@@ -7,8 +7,7 @@ class MemberProfile(models.fields.related.OneToOneField):
 class MemberProfile(models.Model):
     class Status(models.TextChoices):
         PENDING_TREASURER = 'PENDING_TREASURER', 'Pending Treasurer Approval'
-        PENDING_DETAILS = 'PENDING_DETAILS', 'Pending Additional Details'
-        PENDING_SECRETARY = 'PENDING_SECRETARY', 'Pending Secretary Approval'
+        ACTIVE_INCOMPLETE = 'ACTIVE_INCOMPLETE', 'Active (Missing Details)'
         ACTIVE = 'ACTIVE', 'Active'
         SUSPENDED = 'SUSPENDED', 'Suspended'
         INACTIVE = 'INACTIVE', 'Inactive'
@@ -19,9 +18,11 @@ class MemberProfile(models.Model):
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING_TREASURER)
     
     # Core Details
+    phone = models.CharField(max_length=20, blank=True)
     gender = models.CharField(max_length=10, blank=True)
     id_number = models.CharField(max_length=20, blank=True)
     current_workstation = models.CharField(max_length=255, blank=True)
+    home_subcounty = models.CharField(max_length=100, blank=True)
     member_type = models.CharField(max_length=50, blank=True)
     zone = models.CharField(max_length=100, blank=True)
     
@@ -68,6 +69,7 @@ class Case(models.Model):
     required_amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    beneficiary = models.ForeignKey('MemberProfile', on_delete=models.SET_NULL, null=True, blank=True, related_name='beneficiary_cases')
 
     def __str__(self):
         return self.title
@@ -86,3 +88,13 @@ class Contribution(models.Model):
 
     def __str__(self):
         return f"{self.member} -> {self.welfare_case} ({'Paid' if self.is_fully_paid else 'Pending'})"
+
+class MinuteRecord(models.Model):
+    title = models.CharField(max_length=255)
+    date = models.DateField(auto_now_add=True)
+    excerpt = models.TextField()
+    pdf_file = models.FileField(upload_to='minutes/', null=True, blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='published_minutes')
+
+    def __str__(self):
+        return self.title
