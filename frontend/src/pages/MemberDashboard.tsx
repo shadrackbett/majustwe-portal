@@ -14,6 +14,14 @@ const MemberDashboard: React.FC = () => {
   
   // Use the ID from AuthContext, otherwise fallback to the first active incomplete member or default
   const profile = members.find(m => m.user?.id === user?.id || m.id === user?.id) || members[0];
+
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-majustwe-blue"></div>
+      </div>
+    );
+  }
   
   // Local form state
   const [formData, setFormData] = useState<{
