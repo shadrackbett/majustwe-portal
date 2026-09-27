@@ -69,8 +69,9 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
     def submit_details(self, request, pk=None):
         profile = self.get_object()
         # Allows submitting details if ACTIVE_INCOMPLETE or ACTIVE
-        if profile.status not in [MemberProfile.Status.ACTIVE_INCOMPLETE, MemberProfile.Status.ACTIVE]:
-            return Response({'error': 'Profile not in correct state'}, status=status.HTTP_400_BAD_REQUEST)
+        if not request.user.is_executive():
+            if profile.status not in [MemberProfile.Status.ACTIVE_INCOMPLETE, MemberProfile.Status.ACTIVE]:
+                return Response({'error': 'Profile not in correct state'}, status=status.HTTP_400_BAD_REQUEST)
             
         # Parse extra details
         profile.spouse_name = request.data.get('spouse_name', profile.spouse_name)
