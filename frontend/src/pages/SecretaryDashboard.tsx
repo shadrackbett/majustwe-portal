@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 
 const SecretaryDashboard: React.FC = () => {
-  const { members, setMembers, minutes, setMinutes, refreshData } = useContext(DatabaseContext);
+  const { members, refreshData } = useContext(DatabaseContext);
 
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);

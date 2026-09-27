@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { DatabaseContext } from '../context/DatabaseContext';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+
 import api from '../api';
 
 const MemberDashboard: React.FC = () => {
-  const { members, setMembers, cases, contributions, minutes, refreshData } = useContext(DatabaseContext);
+  const { members, cases, contributions, minutes, refreshData } = useContext(DatabaseContext);
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
+  
   
   const [activeTab, setActiveTab] = useState('PROFILE');
   const [editMode, setEditMode] = useState(false);
@@ -15,13 +15,7 @@ const MemberDashboard: React.FC = () => {
   // Use the ID from AuthContext, otherwise fallback to the first active incomplete member or default
   const profile = members.find(m => m.user?.id === user?.id || m.id === user?.id) || members[0];
 
-  if (!profile) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-majustwe-blue"></div>
-      </div>
-    );
-  }
+
   
   // Local form state
   const [formData, setFormData] = useState<{
@@ -76,7 +70,7 @@ const MemberDashboard: React.FC = () => {
   if (!profile) return <div>Loading...</div>;
 
   // Derived data
-  const myContributions = contributions.filter(c => c.member === profile.id);
+  const myContributions = contributions.filter(c => c.member === profile?.id);
   const officials = members.filter(m => m.user?.role === 'SECRETARY' || m.user?.role === 'TREASURER');
 
   const needsDetails = profile.status === 'ACTIVE_INCOMPLETE' || profile.dependents?.length === 0;

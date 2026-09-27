@@ -23,14 +23,10 @@ import './App.css';
 function AppContent() {
   const { user, loading, logout } = React.useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
+  
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-    setMobileMenuOpen(false);
-  };
+  
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-blue-50"><div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-majustwe-blue"></div></div>;

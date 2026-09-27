@@ -6,7 +6,7 @@ import api from '../api';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const { members, setMembers } = useContext(DatabaseContext);
+  const { members } = useContext(DatabaseContext);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
