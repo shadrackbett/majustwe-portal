@@ -11,6 +11,9 @@ const MemberDashboard: React.FC = () => {
   
   const [activeTab, setActiveTab] = useState('PROFILE');
   const [editMode, setEditMode] = useState(false);
+  const [passwordData, setPasswordData] = useState({ old_password: '', new_password: '' });
+  const [passwordStatus, setPasswordStatus] = useState<'idle'|'loading'|'success'|'error'>('idle');
+  const [passwordMessage, setPasswordMessage] = useState('');
   
   // Use the ID from AuthContext, otherwise fallback to the first active incomplete member or default
   const profile = members.find(m => m.user?.id === user?.id || m.id === user?.id) || members[0];
@@ -60,6 +63,20 @@ const MemberDashboard: React.FC = () => {
     } catch (e) {
       console.error(e);
       alert('Failed to update profile.');
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordStatus('loading');
+    try {
+      const res = await api.post('/auth/change-password/', passwordData);
+      setPasswordStatus('success');
+      setPasswordMessage(res.data.detail || 'Password changed successfully');
+      setPasswordData({ old_password: '', new_password: '' });
+    } catch (err: any) {
+      setPasswordStatus('error');
+      setPasswordMessage(err.response?.data?.detail || 'Failed to change password');
     }
   };
 

@@ -7,6 +7,8 @@ import { DatabaseProvider } from './context/DatabaseContext';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Constitution from './pages/Constitution';
 import FAQ from './pages/FAQ';
 import Brochure from './pages/Brochure';
@@ -134,6 +136,8 @@ function AppContent() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/constitution" element={user ? <Constitution /> : <Navigate to="/login" replace />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/join-us" element={<Brochure />} />
