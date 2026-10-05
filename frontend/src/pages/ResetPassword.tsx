@@ -29,14 +29,18 @@ const ResetPassword: React.FC = () => {
     }
     
     setStatus('loading');
+    if (status === 'loading') return;
     try {
       const res = await api.post('/auth/password-reset-confirm/', { 
         uid, 
         token, 
         new_password: newPassword 
       });
-      setMessage(res.data.detail || 'Password has been reset successfully.');
+      setMessage(res.data.detail || 'Password has been reset successfully. Redirecting to login...');
       setStatus('success');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2500);
     } catch (err: any) {
       setMessage(err.response?.data?.detail || 'The reset link is invalid or has expired.');
       setStatus('error');

@@ -156,8 +156,9 @@ class PasswordResetRequestView(APIView):
         subject = "MAJUSTWE Portal - Password Reset"
         message = f"Hello {user.first_name},\\n\\nYou requested a password reset for your MAJUSTWE account.\\n\\nClick the link below to set a new password:\\n{reset_link}\\n\\nIf you did not request this, please ignore this email.\\n\\nRegards,\\nMAJUSTWE Secretary"
         
+        html_message = f'<p>Hello {user.first_name},</p><p>You requested a password reset for your MAJUSTWE account.</p><p>Click the link below to set a new password:</p><p><a href="{reset_link}">{reset_link}</a></p><p>If you did not request this, please ignore this email.</p><p>Regards,<br>MAJUSTWE Secretary</p>'
         try:
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email], html_message=html_message)
         except Exception as e:
             print(f"Failed to send email: {e}")
             
