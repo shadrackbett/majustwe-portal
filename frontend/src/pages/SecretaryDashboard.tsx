@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DatabaseContext } from '../context/DatabaseContext';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
@@ -30,7 +31,8 @@ const SecretaryDashboard: React.FC = () => {
     setEditModalOpen(true);
   };
 
-  const { user, login } = useContext(AuthContext); // Make sure login is imported
+  const { user, login } = useContext(AuthContext);
+  const navigate = useNavigate(); // Make sure login is imported
 
   const handleSaveEdit = async () => {
     try {
@@ -422,17 +424,17 @@ const SecretaryDashboard: React.FC = () => {
         <p className="text-gray-700 mb-6 font-medium">Access and print official documents for recruiting new members or providing physical copies to schools.</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button onClick={() => window.location.href = '/join-us'} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
+          <button onClick={() => navigate('/join-us')} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
             <span className="text-3xl mb-2">📰</span>
             <span>View Brochure</span>
           </button>
           
-          <button onClick={() => window.location.href = '/faq'} className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
+          <button onClick={() => navigate('/faq')} className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
             <span className="text-3xl mb-2">❓</span>
             <span>View FAQs</span>
           </button>
           
-          <button onClick={() => window.location.href = '/membership-form?blank=true'} className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
+          <button onClick={() => navigate('/membership-form?blank=true')} className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
             <span className="text-3xl mb-2">📝</span>
             <span>Print Membership Form</span>
           </button>

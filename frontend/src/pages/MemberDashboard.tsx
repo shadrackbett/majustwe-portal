@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DatabaseContext } from '../context/DatabaseContext';
 import { AuthContext } from '../context/AuthContext';
 
@@ -7,6 +8,7 @@ import api from '../api';
 const MemberDashboard: React.FC = () => {
   const { members, cases, contributions, minutes, refreshData } = useContext(DatabaseContext);
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   
   const [activeTab, setActiveTab] = useState('PROFILE');
@@ -81,7 +83,7 @@ const MemberDashboard: React.FC = () => {
   };
 
   const handleDownloadForm = () => {
-    window.location.href = '/membership-form';
+    navigate('/membership-form');
   };
 
   if (!profile) return <div>Loading...</div>;

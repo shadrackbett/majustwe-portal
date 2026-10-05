@@ -11,6 +11,10 @@ const MembershipForm: React.FC = () => {
   const isBlank = location.search.includes('blank=true');
   const profile = !isBlank && user ? (members.find(m => Number(m.user?.id) === Number(user.id) || Number(m.id) === Number(user.id)) || null) : null;
 
+  if (!isBlank && user && members.length === 0) {
+    return <div className="flex items-center justify-center min-h-screen text-xl font-bold text-gray-500">Loading Form Data...</div>;
+  }
+
   useEffect(() => {
     // Optionally trigger print dialog automatically when the page loads
     // setTimeout(() => window.print(), 500);
