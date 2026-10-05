@@ -55,9 +55,10 @@ const Register: React.FC = () => {
       });
       alert('Registration Submitted! Please sign in using your ID Number (' + username + ') as your username.');
       navigate('/login');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Registration failed. Username or email might be taken.');
+      const serverMsg = err.response?.data?.error || err.response?.data?.detail || 'Username or email might be taken.';
+      alert('Registration failed: ' + serverMsg);
     }
   };
 
