@@ -163,6 +163,30 @@ class PasswordResetRequestView(APIView):
             
         return Response({'detail': 'If an account with this ID Number exists and has a registered email, a reset link has been sent.'})
 
+class TestTokenView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def post(self, request):
+        from django.contrib.auth import get_user_model
+        from django.contrib.auth.tokens import default_token_generator
+        from django.utils.http import urlsafe_base64_encode
+        from django.utils.encoding import force_bytes
+        User = get_user_model()
+        
+        username = request.data.get('username')
+        user = User.objects.get(username=username)
+        
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        
+        is_valid = default_token_generator.check_token(user, token)
+        
+        return Response({
+            'uid': uid,
+            'token': token,
+            'is_valid_immediately': is_valid
+        })
+
 class PasswordResetConfirmView(APIView):
     permission_classes = [permissions.AllowAny]
 
