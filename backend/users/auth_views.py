@@ -34,9 +34,11 @@ class PasswordResetRequestView(APIView):
             return Response({'detail': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
             
         try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            # Return success even if not found to prevent email enumeration
+            # Use .first() in case multiple accounts share the same email
+            user = User.objects.filter(email=email).first()
+            if not user:
+                return Response({'detail': 'If an account with this email exists, a reset link has been sent.'})
+        except Exception:
             return Response({'detail': 'If an account with this email exists, a reset link has been sent.'})
             
         uid = urlsafe_base64_encode(force_bytes(user.pk))
