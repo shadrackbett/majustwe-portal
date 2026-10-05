@@ -16,31 +16,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .models import MemberProfile
 
-class BulkUpdateProfilesView(APIView):
-    authentication_classes = []
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        updates = request.data.get('updates', [])
-        updated_count = 0
-        for update in updates:
-            profile_id = update.get('profile_id')
-            member_id = update.get('member_id')
-            workstation = update.get('current_workstation')
-            
-            try:
-                profile = MemberProfile.objects.get(id=profile_id)
-                if member_id is not None:
-                    profile.member_id = str(member_id)
-                if workstation:
-                    profile.current_workstation = workstation
-                profile.save()
-                updated_count += 1
-            except MemberProfile.DoesNotExist:
-                pass
-                
-        return Response({'success': True, 'updated_count': updated_count})
-
 class MemberProfileViewSet(viewsets.ModelViewSet):
     queryset = MemberProfile.objects.all()
     serializer_class = MemberProfileSerializer
@@ -77,7 +52,6 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsOwnerOrExecutive]
         return [permission() for permission in permission_classes]
-
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def submit_mpesa(self, request, pk=None):
@@ -242,7 +216,6 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
 
         return Response(MemberProfileSerializer(profile).data)
 
-
     @action(detail=True, methods=['post'], permission_classes=[IsSecretary])
     def force_password(self, request, pk=None):
         try:
@@ -303,7 +276,6 @@ class CaseViewSet(viewsets.ModelViewSet):
         threading.Thread(target=send_case_email, args=(instance.title, instance.description, instance.required_amount, instance.deadline)).start()
         
 
-
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [IsExecutive]
@@ -315,7 +287,6 @@ class ContributionViewSet(viewsets.ModelViewSet):
     queryset = Contribution.objects.all()
     serializer_class = ContributionSerializer
     
-
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -329,7 +300,6 @@ class ContributionViewSet(viewsets.ModelViewSet):
         if user.is_executive() or user.is_generic_official():
             return Contribution.objects.all()
         return Contribution.objects.filter(member__user=user)
-
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def submit_mpesa(self, request, pk=None):
@@ -362,7 +332,6 @@ class MinuteRecordViewSet(viewsets.ModelViewSet):
     queryset = MinuteRecord.objects.all().order_by('-date')
     serializer_class = MinuteRecordSerializer
     
-
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
