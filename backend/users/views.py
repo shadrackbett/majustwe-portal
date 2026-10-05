@@ -185,7 +185,8 @@ class TestTokenView(APIView):
         return Response({
             'uid': uid,
             'token': token,
-            'is_valid_immediately': is_valid
+            'is_valid_immediately': is_valid,
+            'user_email': user.email
         })
 
 class PasswordResetConfirmView(APIView):
