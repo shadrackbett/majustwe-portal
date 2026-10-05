@@ -66,6 +66,23 @@ const SecretaryDashboard: React.FC = () => {
   };
 
   const handleForcePassword = async () => {
+    const cleanPassword = newPassword.trim();
+    if (!cleanPassword || cleanPassword.length < 8) {
+      alert('Password must be at least 8 characters long.');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to force change this user\'s password?')) return;
+    try {
+      await api.post(`/welfare/profiles/${editingMember.id}/force_password/`, { new_password: cleanPassword });
+      alert('Password updated successfully. Please securely share this new password with the user.');
+      setNewPassword('');
+    } catch (e: any) {
+      console.error(e);
+      alert('Failed to update password: ' + (e.response?.data?.error || 'Server Error'));
+    }
+  };
+
+  const _oldHandleForcePassword_ = async () => {
     if (!newPassword || newPassword.length < 8) {
       alert('Password must be at least 8 characters long.');
       return;
