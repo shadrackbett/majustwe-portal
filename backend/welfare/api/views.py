@@ -249,6 +249,49 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
         profile, created = MemberProfile.objects.get_or_create(user=request.user)
         return Response(MemberProfileSerializer(profile).data)
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from welfare.models import Case, Contribution, MemberProfile
+
+class InjectHistoricalCasesView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        cases_data = [
+            {"title": "Case 1", "amount": 300},
+            {"title": "Case 2", "amount": 200},
+            {"title": "Case 3", "amount": 200},
+            {"title": "Case 4", "amount": 500},
+            {"title": "Case 5", "amount": 200},
+            {"title": "Case 6", "amount": 200},
+            {"title": "Case 7", "amount": 200},
+        ]
+
+        valid_members = MemberProfile.objects.exclude(member_id__isnull=True)
+        created_cases = []
+        
+        for c_data in cases_data:
+            case, created = Case.objects.get_or_create(
+                title=c_data["title"],
+                defaults={"required_amount": c_data["amount"], "description": "Historical backfilled case"}
+            )
+            created_cases.append(case)
+
+        contrib_count = 0
+        for member in valid_members:
+            for case in created_cases:
+                contrib, created = Contribution.objects.get_or_create(
+                    member=member,
+                    welfare_case=case,
+                    defaults={"amount_paid": 0.00, "is_fully_paid": False}
+                )
+                if created:
+                    contrib_count += 1
+                    
+        return Response({'success': True, 'cases_created': len(created_cases), 'contribs_created': contrib_count})
+
 class CaseViewSet(viewsets.ModelViewSet):
     queryset = Case.objects.all()
     serializer_class = CaseSerializer
