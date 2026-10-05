@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api';
 
 const ForgotPassword: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
@@ -11,8 +11,8 @@ const ForgotPassword: React.FC = () => {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await api.post('/auth/password-reset/', { email });
-      setMessage(res.data.detail || 'If an account with this email exists, a reset link has been sent.');
+      const res = await api.post('/auth/password-reset/', { username });
+      setMessage(res.data.detail || 'If an account with this ID Number exists and has a registered email, a reset link has been sent.');
       setStatus('success');
     } catch (err: any) {
       setMessage(err.response?.data?.detail || 'An error occurred. Please try again.');
@@ -29,7 +29,7 @@ const ForgotPassword: React.FC = () => {
             Recover Password
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your email address and we will send you a link to reset your password.
+            Enter your ID Number and we will send a password reset link to your registered email address.
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -45,16 +45,16 @@ const ForgotPassword: React.FC = () => {
                 </div>
               )}
               <div>
-                <label htmlFor="email-address" className="sr-only">Email address</label>
+                <label htmlFor="id-number" className="sr-only">ID Number</label>
                 <input
-                  id="email-address"
-                  name="email"
-                  type="email"
+                  id="id-number"
+                  name="username"
+                  type="text"
                   required
                   className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-majustwe-lime focus:border-majustwe-lime focus:z-10 sm:text-sm bg-white/70 backdrop-blur-sm"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="ID Number"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
 

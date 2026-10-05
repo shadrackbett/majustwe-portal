@@ -29,17 +29,17 @@ class PasswordResetRequestView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
-        if not email:
-            return Response({'detail': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        username = request.data.get('username')
+        if not username:
+            return Response({'detail': 'ID Number is required.'}, status=status.HTTP_400_BAD_REQUEST)
             
         try:
-            # Use .first() in case multiple accounts share the same email
-            user = User.objects.filter(email=email).first()
-            if not user:
-                return Response({'detail': 'If an account with this email exists, a reset link has been sent.'})
+            user = User.objects.filter(username=username).first()
+            if not user or not user.email:
+                # Return generic success message to prevent user enumeration
+                return Response({'detail': 'If an account with this ID Number exists and has a registered email, a reset link has been sent.'})
         except Exception:
-            return Response({'detail': 'If an account with this email exists, a reset link has been sent.'})
+            return Response({'detail': 'If an account with this ID Number exists and has a registered email, a reset link has been sent.'})
             
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
@@ -55,7 +55,7 @@ class PasswordResetRequestView(APIView):
         except Exception as e:
             print(f"Failed to send email: {e}")
             
-        return Response({'detail': 'If an account with this email exists, a reset link has been sent.'})
+        return Response({'detail': 'If an account with this ID Number exists and has a registered email, a reset link has been sent.'})
 
 class PasswordResetConfirmView(APIView):
     permission_classes = [permissions.AllowAny]
