@@ -51,7 +51,6 @@ class RegisterView(APIView):
         import threading
         from django.core.mail import send_mail
         from django.conf import settings
-        from welfare.models import MemberProfile
         
         def send_welcome_email(user_email, first_name):
             try:
