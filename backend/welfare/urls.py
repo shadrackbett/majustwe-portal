@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .api.views import MemberProfileViewSet, CaseViewSet, ContributionViewSet, MinuteRecordViewSet, InjectHistoricalCasesView
+from .api.views import MemberProfileViewSet, CaseViewSet, ContributionViewSet, MinuteRecordViewSet
 
 router = DefaultRouter()
 router.register(r'profiles', MemberProfileViewSet)
@@ -10,5 +10,4 @@ router.register(r'minutes', MinuteRecordViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('api/inject-cases/', InjectHistoricalCasesView.as_view(), name='inject_cases'),
 ]
