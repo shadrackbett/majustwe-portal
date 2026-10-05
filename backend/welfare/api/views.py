@@ -254,6 +254,27 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from welfare.models import Case, Contribution, MemberProfile
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from welfare.models import Case, Contribution
+
+class BulkMarkPaidView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        historical_cases = Case.objects.filter(description="Historical backfilled case")
+        updated_count = 0
+        for case in historical_cases:
+            contribs = Contribution.objects.filter(welfare_case=case)
+            for c in contribs:
+                c.amount_paid = case.required_amount
+                c.is_fully_paid = True
+                c.save()
+                updated_count += 1
+        return Response({'success': True, 'updated': updated_count})
+
 class CaseViewSet(viewsets.ModelViewSet):
     queryset = Case.objects.all()
     serializer_class = CaseSerializer
