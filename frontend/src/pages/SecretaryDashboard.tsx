@@ -12,6 +12,7 @@ const SecretaryDashboard: React.FC = () => {
   
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<any>(null);
+  const [newPassword, setNewPassword] = useState('');
   const [rejectingMemberId, setRejectingMemberId] = useState<number | null>(null);
   const [viewingDetailsId, setViewingDetailsId] = useState<number | null>(null);
 
@@ -61,6 +62,35 @@ const SecretaryDashboard: React.FC = () => {
     } catch (e) {
       console.error(e);
       alert('Failed to update member.');
+    }
+  };
+
+  const handleForcePassword = async () => {
+    if (!newPassword || newPassword.length < 8) {
+      alert('Password must be at least 8 characters long.');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to force change this user\'s password?')) return;
+    try {
+      await api.post(`/welfare/profiles/${editingMember.id}/force_password/`, { new_password: newPassword });
+      alert('Password updated successfully. Please securely share this new password with the user.');
+      setNewPassword('');
+    } catch (e: any) {
+      console.error(e);
+      alert('Failed to update password: ' + (e.response?.data?.error || 'Server Error'));
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('CRITICAL WARNING: Are you absolutely sure you want to completely delete this user and all their records? This cannot be undone!')) return;
+    try {
+      await api.delete(`/welfare/profiles/${editingMember.id}/delete_account/`);
+      alert('Account deleted permanently.');
+      setEditModalOpen(false);
+      refreshData();
+    } catch (e: any) {
+      console.error(e);
+      alert('Failed to delete account.');
     }
   };
 

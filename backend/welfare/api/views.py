@@ -191,6 +191,27 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
 
         return Response(MemberProfileSerializer(profile).data)
 
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSecretary])
+    def force_password(self, request, pk=None):
+        profile = self.get_object()
+        new_password = request.data.get('new_password')
+        if not new_password:
+            return Response({'error': 'New password is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = profile.user
+        user.set_password(new_password)
+        user.save()
+        return Response({'success': 'Password updated successfully.'})
+
+    @action(detail=True, methods=['delete'], permission_classes=[IsSecretary])
+    def delete_account(self, request, pk=None):
+        profile = self.get_object()
+        user = profile.user
+        # Deleting the user will cascade and delete the MemberProfile as well
+        user.delete()
+        return Response({'success': 'Account deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def my_profile(self, request):
         profile, created = MemberProfile.objects.get_or_create(user=request.user)
