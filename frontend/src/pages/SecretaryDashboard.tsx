@@ -432,7 +432,7 @@ const SecretaryDashboard: React.FC = () => {
             <span>View FAQs</span>
           </button>
           
-          <button onClick={() => window.location.href = '/membership-form'} className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
+          <button onClick={() => window.location.href = '/membership-form?blank=true'} className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center">
             <span className="text-3xl mb-2">📝</span>
             <span>Print Membership Form</span>
           </button>

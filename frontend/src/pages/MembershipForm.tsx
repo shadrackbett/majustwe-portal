@@ -1,6 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { DatabaseContext } from '../context/DatabaseContext';
 
 const MembershipForm: React.FC = () => {
+  const location = useLocation();
+  const { user } = useContext(AuthContext);
+  const { members } = useContext(DatabaseContext);
+  
+  const isBlank = location.search.includes('blank=true');
+  const profile = !isBlank && user ? (members.find(m => Number(m.user?.id) === Number(user.id) || Number(m.id) === Number(user.id)) || null) : null;
+
   useEffect(() => {
     // Optionally trigger print dialog automatically when the page loads
     // setTimeout(() => window.print(), 500);
@@ -42,11 +52,11 @@ const MembershipForm: React.FC = () => {
         <div className="grid grid-cols-2 gap-4">
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">Full Name:</span>
-            <span className="text-transparent">______________________________________</span>
+            {profile ? <span className="text-black inline-block min-w-[200px] border-b border-black font-medium">{profile.user?.first_name} {profile.user?.last_name}</span> : <span className="text-transparent">______________________________________</span>}
           </div>
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">ID No.:</span>
-            <span className="text-transparent">_________________________</span>
+            {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.user?.username || profile.id_number}</span> : {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.phone}</span> : {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.user?.email || ""}</span> : {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.zone || ""}</span> : <span className="text-transparent">_________________________</span>}}}}
           </div>
         </div>
 
@@ -68,7 +78,7 @@ const MembershipForm: React.FC = () => {
           </div>
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">Member Type (PnP/Intern/BOM):</span>
-            <span className="text-transparent">______________</span>
+            {profile ? <span className="text-black inline-block min-w-[100px] border-b border-black font-medium">{profile.member_type || ""}</span> : <span className="text-transparent">______________</span>}
           </div>
         </div>
 
@@ -83,13 +93,16 @@ const MembershipForm: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {[1, 2, 3, 4].map(num => (
-                <tr key={num} className="h-6">
-                  <td className="border border-black p-1 text-center">{num}</td>
-                  <td className="border border-black p-1"></td>
-                  <td className="border border-black p-1"></td>
-                </tr>
-              ))}
+              {[0, 1, 2, 3].map(index => {
+                const dep = profile?.dependents && profile.dependents[index];
+                return (
+                  <tr key={index} className="h-6">
+                    <td className="border border-black p-1 text-center">{index + 1}</td>
+                    <td className="border border-black p-1 font-medium">{dep ? dep.name : ''}</td>
+                    <td className="border border-black p-1 font-medium">{dep ? dep.relationship : ''}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -107,14 +120,17 @@ const MembershipForm: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {[1, 2].map(num => (
-                <tr key={num} className="h-6">
-                  <td className="border border-black p-1 text-center">{num}</td>
-                  <td className="border border-black p-1"></td>
-                  <td className="border border-black p-1"></td>
-                  <td className="border border-black p-1"></td>
-                </tr>
-              ))}
+              {[0, 1].map(index => {
+                const gd = profile?.guardians && profile.guardians[index];
+                return (
+                  <tr key={index} className="h-6">
+                    <td className="border border-black p-1 text-center">{index + 1}</td>
+                    <td className="border border-black p-1 font-medium">{gd ? gd.name : ''}</td>
+                    <td className="border border-black p-1 font-medium">{gd ? gd.relationship : ''}</td>
+                    <td className="border border-black p-1 font-medium">{gd ? gd.phone : ''}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
