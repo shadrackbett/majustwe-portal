@@ -90,7 +90,8 @@ const MemberDashboard: React.FC = () => {
   const myContributions = contributions.filter(c => c.member === profile?.id);
   const officials = members.filter(m => m.user?.role === 'SECRETARY' || m.user?.role === 'TREASURER');
 
-  const needsDetails = profile.status === 'ACTIVE_INCOMPLETE' || profile.dependents?.length === 0;
+  const needsDetails = profile.status === 'ACTIVE_INCOMPLETE' || (profile.status === 'ACTIVE' && profile.dependents?.length === 0);
+  const isPendingTreasurer = profile.status === 'PENDING_TREASURER';
 
   return (
     <div className="bg-white/40 backdrop-blur-xl shadow-2xl border border-white/60 rounded-3xl p-4 md:p-8 relative min-h-[80vh]">
