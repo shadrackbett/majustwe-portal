@@ -60,6 +60,14 @@ const Login: React.FC = () => {
             </div>
           </div>
 
+          <div className="flex items-center justify-end mt-2">
+            <div className="text-sm">
+              <Link to="/forgot-password" className="font-bold text-majustwe-blue hover:text-blue-900">
+                Forgot your password?
+              </Link>
+            </div>
+          </div>
+
           <div>
             <button type="submit" className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-md text-white bg-majustwe-blue hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-majustwe-blue transition-colors">
               Sign In
