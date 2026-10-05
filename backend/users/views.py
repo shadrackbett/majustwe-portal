@@ -7,6 +7,19 @@ from rest_framework.permissions import AllowAny
 
 User = get_user_model()
 
+class CleanupOrphansView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def get(self, request):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        # Find users without a MemberProfile
+        orphans = User.objects.filter(welfare_profile__isnull=True, is_superuser=False)
+        count = orphans.count()
+        usernames = [u.username for u in orphans]
+        orphans.delete()
+        return Response({'deleted': count, 'usernames': usernames})
+
 class RegisterView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
