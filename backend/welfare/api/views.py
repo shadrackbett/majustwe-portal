@@ -16,6 +16,36 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .models import MemberProfile
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from .models import MemberProfile
+
+class BulkUpdateProfilesView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        updates = request.data.get('updates', [])
+        updated_count = 0
+        for update in updates:
+            profile_id = update.get('profile_id')
+            member_id = update.get('member_id')
+            workstation = update.get('current_workstation')
+            
+            try:
+                profile = MemberProfile.objects.get(id=profile_id)
+                if member_id is not None:
+                    profile.member_id = str(member_id)
+                if workstation:
+                    profile.current_workstation = workstation
+                profile.save()
+                updated_count += 1
+            except MemberProfile.DoesNotExist:
+                pass
+                
+        return Response({'success': True, 'updated_count': updated_count})
+
 class MemberProfileViewSet(viewsets.ModelViewSet):
     queryset = MemberProfile.objects.all()
     serializer_class = MemberProfileSerializer
