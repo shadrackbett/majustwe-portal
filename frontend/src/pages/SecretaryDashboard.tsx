@@ -78,7 +78,7 @@ const SecretaryDashboard: React.FC = () => {
       setNewPassword('');
     } catch (e: any) {
       console.error(e);
-      alert('Failed to update password: ' + (e.response?.data?.error || 'Server Error'));
+      alert('Failed to update password: ' + (e.response?.data?.error || e.response?.data?.detail || e.message || 'Server Error'));
     }
   };
 
@@ -94,7 +94,7 @@ const SecretaryDashboard: React.FC = () => {
       setNewPassword('');
     } catch (e: any) {
       console.error(e);
-      alert('Failed to update password: ' + (e.response?.data?.error || 'Server Error'));
+      alert('Failed to update password: ' + (e.response?.data?.error || e.response?.data?.detail || e.message || 'Server Error'));
     }
   };
 

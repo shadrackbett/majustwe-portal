@@ -23,6 +23,15 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
             return MemberProfile.objects.all()
         return MemberProfile.objects.filter(user=user)
     
+    def perform_update(self, serializer):
+        profile = serializer.save()
+        # If id_number was updated, sync it to the User's username
+        if 'id_number' in serializer.validated_data:
+            new_id_number = serializer.validated_data['id_number']
+            if profile.user.username != new_id_number:
+                profile.user.username = new_id_number
+                profile.user.save()
+
     def get_permissions(self):
         if self.action in ['secretary_approve', 'secretary_reject']:
             permission_classes = [IsSecretary]
@@ -194,15 +203,18 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[IsSecretary])
     def force_password(self, request, pk=None):
-        profile = self.get_object()
-        new_password = request.data.get('new_password')
-        if not new_password:
-            return Response({'error': 'New password is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        user = profile.user
-        user.set_password(new_password)
-        user.save()
-        return Response({'success': 'Password updated successfully.'})
+        try:
+            profile = self.get_object()
+            new_password = request.data.get('new_password')
+            if not new_password:
+                return Response({'error': 'New password is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = profile.user
+            user.set_password(new_password)
+            user.save()
+            return Response({'success': 'Password updated successfully.'})
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=True, methods=['delete'], permission_classes=[IsSecretary])
     def delete_account(self, request, pk=None):
@@ -248,6 +260,15 @@ class CaseViewSet(viewsets.ModelViewSet):
                 
         threading.Thread(target=send_case_email, args=(instance.title, instance.description, instance.required_amount, instance.deadline)).start()
         
+    def perform_update(self, serializer):
+        profile = serializer.save()
+        # If id_number was updated, sync it to the User's username
+        if 'id_number' in serializer.validated_data:
+            new_id_number = serializer.validated_data['id_number']
+            if profile.user.username != new_id_number:
+                profile.user.username = new_id_number
+                profile.user.save()
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [IsExecutive]
@@ -259,6 +280,15 @@ class ContributionViewSet(viewsets.ModelViewSet):
     queryset = Contribution.objects.all()
     serializer_class = ContributionSerializer
     
+    def perform_update(self, serializer):
+        profile = serializer.save()
+        # If id_number was updated, sync it to the User's username
+        if 'id_number' in serializer.validated_data:
+            new_id_number = serializer.validated_data['id_number']
+            if profile.user.username != new_id_number:
+                profile.user.username = new_id_number
+                profile.user.save()
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [IsTreasurer]
@@ -304,6 +334,15 @@ class MinuteRecordViewSet(viewsets.ModelViewSet):
     queryset = MinuteRecord.objects.all().order_by('-date')
     serializer_class = MinuteRecordSerializer
     
+    def perform_update(self, serializer):
+        profile = serializer.save()
+        # If id_number was updated, sync it to the User's username
+        if 'id_number' in serializer.validated_data:
+            new_id_number = serializer.validated_data['id_number']
+            if profile.user.username != new_id_number:
+                profile.user.username = new_id_number
+                profile.user.save()
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [IsSecretary]
