@@ -36,12 +36,13 @@ class BulkUpdateProfilesView(APIView):
             try:
                 profile = MemberProfile.objects.get(id=profile_id)
                 if member_id is not None:
-                    profile.member_id = str(member_id)
+                    profile.member_id = int(member_id)
                 if workstation:
                     profile.current_workstation = workstation
                 profile.save()
                 updated_count += 1
-            except MemberProfile.DoesNotExist:
+            except Exception as e:
+                print("Failed to update profile", profile_id, e)
                 pass
                 
         return Response({'success': True, 'updated_count': updated_count})
