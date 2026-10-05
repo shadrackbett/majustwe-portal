@@ -232,6 +232,29 @@ const SecretaryDashboard: React.FC = () => {
                   <button onClick={() => setEditingMember({...editingMember, guardians: [...(editingMember.guardians || []), {name: '', relationship: '', phone: ''}]})} className="text-xs bg-green-600 text-white px-2 py-1 rounded">Add Guardian</button>
                 )}
               </div>
+              <div className="mt-8 pt-6 border-t border-red-200">
+                <h4 className="text-lg font-bold text-red-700 mb-4">Security Operations</h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-red-50 p-4 rounded-lg border border-red-200 flex flex-col justify-between">
+                    <div>
+                      <h5 className="font-bold text-red-800 mb-1">Force Password Reset</h5>
+                      <p className="text-xs text-gray-600 mb-3">Manually set a new password for this user. (Min 8 chars)</p>
+                      <input type="text" placeholder="New Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="w-full bg-white border border-red-200 rounded-lg p-2 mb-3 text-sm focus:ring-red-500 focus:border-red-500" />
+                    </div>
+                    <button onClick={handleForcePassword} className="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition shadow-sm text-sm">Update Password</button>
+                  </div>
+                  
+                  <div className="bg-red-100 p-4 rounded-lg border border-red-300 flex flex-col justify-between">
+                    <div>
+                      <h5 className="font-bold text-red-900 mb-1">Delete Account</h5>
+                      <p className="text-xs text-red-800 mb-3">Permanently delete this user, their dependents, and wipe all their history from the database.</p>
+                    </div>
+                    <button onClick={handleDeleteAccount} className="w-full px-4 py-2 border-2 border-red-600 text-red-700 font-bold rounded-lg hover:bg-red-600 hover:text-white transition shadow-sm mt-auto text-sm">PERMANENTLY DELETE</button>
+                  </div>
+                </div>
+              </div>
+
 
               <div className="flex justify-end space-x-3 mt-6">
               <button onClick={() => setEditModalOpen(false)} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-100 rounded-lg">Cancel</button>
