@@ -17,6 +17,19 @@ const MembershipForm: React.FC = () => {
     return <div className="flex items-center justify-center min-h-screen text-xl font-bold text-gray-500">Loading Form Data...</div>;
   }
 
+  // FORCE RENDER DEBUG BAR
+  const debugBar = (
+    <div className="print:hidden bg-red-100 border border-red-500 p-4 mb-4 text-xs font-mono">
+      <p>isBlank: {String(isBlank)}</p>
+      <p>user exists: {String(!!user)} (ID: {user?.id})</p>
+      <p>members.length: {members.length}</p>
+      <p>profile found: {String(!!profile)} (ID: {profile?.id})</p>
+      <p>Matching logic tried: m.user?.id == user.id || m.id == user.id</p>
+      {members.slice(0,2).map(m => <p key={m.id}>Member {m.id} -> m.user?.id = {m.user?.id}</p>)}
+    </div>
+  );
+
+
   useEffect(() => {
     // Optionally trigger print dialog automatically when the page loads
     // setTimeout(() => window.print(), 500);
@@ -37,6 +50,7 @@ const MembershipForm: React.FC = () => {
         `}
       </style>
       <div className="bg-white text-black p-4 md:p-8 print:p-0 font-sans" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      {debugBar}
       <div className="flex justify-between items-center mb-2 border-b-2 border-black pb-2">
         <div className="w-24">
           <img src="/logo.png" alt="MAJUSTWE Logo" className="w-full h-auto object-contain rounded-full" />
