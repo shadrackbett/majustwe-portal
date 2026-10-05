@@ -9,7 +9,20 @@ const MembershipForm: React.FC = () => {
   const { members } = useContext(DatabaseContext);
   
   const isBlank = location.search.includes('blank=true');
-  const profile = !isBlank && user ? (members.find(m => Number(m.user?.id) === Number(user.id) || Number(m.id) === Number(user.id)) || null) : null;
+    const profile = !isBlank && user ? (members.find(m => Number(m.user?.id) === Number(user.id) || Number(m.id) === Number(user.id)) || null) : null;
+
+  if (!isBlank && user && members.length > 0 && !profile) {
+    return (
+      <div className="p-8 text-red-500 font-bold">
+        DEBUG MODE: Could not find profile!<br/>
+        User Context ID: {user.id}<br/>
+        Members loaded: {members.length}<br/>
+        First 3 members user IDs: {members.slice(0, 3).map(m => m.user?.id || 'null').join(', ')}<br/>
+        Please copy this text and send it to the developer.
+      </div>
+    );
+  }
+
 
   if (!isBlank && user && members.length === 0) {
     return <div className="flex items-center justify-center min-h-screen text-xl font-bold text-gray-500">Loading Form Data...</div>;
