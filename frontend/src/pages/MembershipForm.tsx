@@ -11,17 +11,6 @@ const MembershipForm: React.FC = () => {
   const isBlank = location.search.includes('blank=true');
     const profile = !isBlank && user ? (members.find(m => Number(m.user?.id) === Number(user.id) || Number(m.id) === Number(user.id)) || null) : null;
 
-  if (!isBlank && user && members.length > 0 && !profile) {
-    return (
-      <div className="p-8 text-red-500 font-bold">
-        DEBUG MODE: Could not find profile!<br/>
-        User Context ID: {user.id}<br/>
-        Members loaded: {members.length}<br/>
-        First 3 members user IDs: {members.slice(0, 3).map(m => m.user?.id || 'null').join(', ')}<br/>
-        Please copy this text and send it to the developer.
-      </div>
-    );
-  }
 
 
   if (!isBlank && user && members.length === 0) {
@@ -66,32 +55,32 @@ const MembershipForm: React.FC = () => {
       <h3 className="text-lg font-bold text-center underline mb-2">OFFICIAL MEMBERSHIP REGISTRATION FORM</h3>
 
       <div className="space-y-4 text-sm">
-        <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4">
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">Full Name:</span>
             {profile ? <span className="text-black inline-block min-w-[200px] border-b border-black font-medium">{profile.user?.first_name} {profile.user?.last_name}</span> : <span className="text-transparent">______________________________________</span>}
           </div>
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">ID No.:</span>
-            {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.user?.username || profile.id_number}</span> : {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.phone}</span> : {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.user?.email || ""}</span> : {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.zone || ""}</span> : <span className="text-transparent">_________________________</span>}}}}
+            {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.user?.username || profile.id_number}</span> : <span className="text-transparent">_________________________</span>}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">Phone Number:</span>
-            <span className="text-transparent">_________________________</span>
+            {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.phone}</span> : <span className="text-transparent">_________________________</span>}
           </div>
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">Email Address:</span>
-            <span className="text-transparent">_________________________</span>
+            {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.user?.email || ""}</span> : <span className="text-transparent">_________________________</span>}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">School Zone:</span>
-            <span className="text-transparent">_________________________</span>
+            {profile ? <span className="text-black inline-block min-w-[150px] border-b border-black font-medium">{profile.zone || ""}</span> : <span className="text-transparent">_________________________</span>}
           </div>
           <div className="border-b border-black pb-1">
             <span className="font-bold mr-2">Member Type (PnP/Intern/BOM):</span>
