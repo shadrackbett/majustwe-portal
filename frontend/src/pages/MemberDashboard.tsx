@@ -294,7 +294,20 @@ const MemberDashboard: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'CONTRIBUTIONS' && (
+        {activeTab !== 'PROFILE' && profile?.status === 'ACTIVE_INCOMPLETE' && (
+          <div className="text-center py-12">
+            <svg className="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Profile Incomplete</h3>
+            <p className="text-gray-600 max-w-md mx-auto">
+              Your profile is missing critical details (Dependents and Guardians). You cannot access welfare benefits, records, or make contributions until you declare them.
+            </p>
+            <button onClick={() => setActiveTab('PROFILE')} className="mt-6 bg-majustwe-blue text-white px-6 py-2 rounded-full font-bold hover:bg-blue-900 transition-colors">
+              Go to Profile Tab
+            </button>
+          </div>
+        )}
+        
+        {activeTab === 'CONTRIBUTIONS' && profile?.status !== 'ACTIVE_INCOMPLETE' && (
           <div>
             <h3 className="text-xl font-bold text-majustwe-blue mb-6">Financial Contributions</h3>
             <div className="overflow-x-auto">
@@ -333,7 +346,7 @@ const MemberDashboard: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'MINUTES' && (
+        {activeTab === 'MINUTES' && profile?.status !== 'ACTIVE_INCOMPLETE' && (
           <div>
             <h3 className="text-xl font-bold text-majustwe-blue mb-6">Welfare Records & Minutes</h3>
             <div className="space-y-4">
@@ -355,7 +368,7 @@ const MemberDashboard: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'OFFICIALS' && (
+        {activeTab === 'OFFICIALS' && profile?.status !== 'ACTIVE_INCOMPLETE' && (
           <div>
             <h3 className="text-xl font-bold text-majustwe-blue mb-6">Welfare Officials Directory</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

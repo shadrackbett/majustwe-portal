@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAJUSTWE Official Handbook</title>
+    <style>
+        :root {
+            --primary: #1e3a8a; /* majustwe-blue */
+            --secondary: #65a30d; /* majustwe-lime */
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.3;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+            background: #fff;
+        }
+        .cover-page {
+            text-align: center;
+            padding: 30px 20px;
+            page-break-after: always; /* Forces front page to be isolated */
+            min-height: 80vh; /* Ensures it looks like a cover page on screen */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .cover-page h1 {
+            font-size: 2.8em;
+            color: var(--primary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .cover-page h2 {
+            font-size: 1.4em;
+            color: var(--secondary);
+            font-weight: normal;
+            margin-top: 5px;
+        }
+        .cover-page .date {
+            margin-top: 40px;
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.5;
+        }
+        .toc {
+            page-break-after: always; /* Give TOC its own page */
+            padding-top: 20px;
+        }
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        h2 {
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 2px;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8fafc;
+            color: var(--primary);
+        }
+        .faq-q {
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 10px;
+            font-size: 1.05em;
+        }
+        .faq-a {
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 3px solid var(--secondary);
+        }
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            a {
+                text-decoration: none;
+                color: #333;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cover Page (ISOLATED) -->
+    <div class="cover-page">
+        <img src="frontend/public/logo.png" alt="MAJUSTWE Logo" style="max-width: 150px; margin-bottom: 20px; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+        <h1>MAJUSTWE</h1>
+        <h2>Matuga Junior Schools Teachers' Welfare</h2>
+        
+        <h1 style="margin-top: 30px;">Official Handbook</h1>
+        <h2>Constitution, Rules & Guidelines</h2>
+        
+        <div class="date">
+            Prepared by <strong>Shadrack Bett</strong><br/>
+            For the Executive Committee and Members<br/>
+            Current as of 01 October 2026
+        </div>
+        
+        <div style="margin-top: 40px;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://majustwe-portal-mu.vercel.app/" alt="Scan to visit the Portal" style="border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+            <p style="font-size: 0.9em; color: #666; margin-top: 10px; font-weight: bold;">Scan to access the MAJUSTWE Member Portal</p>
+        </div>
+    </div>
+
+    <!-- Table of Contents (ISOLATED) -->
+    <div class="toc">
+        <h2 style="margin-top: 0;">Table of Contents</h2>
+        <ol style="line-height: 1.8; font-size: 1.1em;">
+            <li><a href="#article1">Article One: Name & Objectives</a></li>
+            <li><a href="#article2">Article Two: Membership & Joining</a></li>
+            <li><a href="#article3">Article Three: Scope of Coverage & Benefits</a></li>
+            <li><a href="#article4">Article Four: Welfare Leadership & Elections</a></li>
+            <li><a href="#article5">Article Five: Finances & Investments</a></li>
+            <li><a href="#article6">Article Six: Meetings & Activities</a></li>
+            <li><a href="#article7">Article Seven: Dispute Resolution & Dissolution</a></li>
+            <li><a href="#article8">Article Eight: Amendments & Legal Framework</a></li>
+            <li><a href="#bylaws" style="color: var(--primary); font-weight: bold;">Appendix: Officials' Bylaws (For Official Use)</a></li>
+        </ol>
+    </div>
+
+    <h2 id="article1" style="margin-top: 0;">1. Name & Objectives</h2>
+    <div class="faq-q">Q: What is the official name of the welfare?</div>
+    <div class="faq-a">A: The official name is the Matuga Junior Schools Teachers' Welfare (MAJUSTWE).</div>
+    
+    <div class="faq-q">Q: What are the core objectives of MAJUSTWE?</div>
+    <div class="faq-a">A: 
+        <ul style="margin: 5px 0;">
+            <li>To unite all Matuga junior school teachers through interactive engagements, open forums, and meaningful activities.</li>
+            <li>To offer moral, social, and financial support to teachers during times of bereavement and other testing times.</li>
+            <li>To disseminate information to members on matters pertaining to education.</li>
+            <li>To pool resources and invest in various projects for the welfare of the members.</li>
+        </ul>
+    </div>
+
+    <h2 id="article2">2. Membership & Joining</h2>
+    <div class="faq-q">Q: Who can join MAJUSTWE?</div>
+    <div class="faq-a">A: Membership is open to all willing teachers teaching in junior schools (under PnP, Interns, and B.O.M terms) within the Matuga sub-county.</div>
+
+    <div class="faq-q">Q: What is the difference between Ordinary and Associate members?</div>
+    <div class="faq-a">A: <strong>Ordinary Members</strong> are those currently teaching in Matuga sub-county. <strong>Associate Members</strong> are teachers who joined while serving in Matuga but have since transferred out or retired.</div>
+
+    <div class="faq-q">Q: What details do I need to provide during registration, and what are they used for?</div>
+    <div class="faq-a">A: During your online registration, you are strictly required to declare the following information:
+        <ul style="margin: 5px 0;">
+            <li><strong>Next of Kin & Beneficiaries:</strong> To ensure that in the unfortunate event of your demise, the welfare benefits are disbursed to the exact individual you authorized, preventing family disputes.</li>
+            <li><strong>Dependents (Max 4 Children):</strong> So the welfare knows exactly which children are officially covered in case of bereavement.</li>
+            <li><strong>Guardians / Parents (Max 2):</strong> To register your official parents or guardians who are covered under the Kshs. 200 contribution tier.</li>
+            <li><strong>Spouse (Max 1):</strong> To officially register the spouse covered under the Kshs. 500 contribution tier.</li>
+        </ul>
+        <em style="font-size: 0.9em;">Note: This information is kept strictly confidential and is used solely by the Executive Committee to verify claims and prevent fraud. Once submitted, Guardians and Dependents can only be updated by the Secretary upon formal request.</em>
+    </div>
+
+    <div class="faq-q">Q: What are the financial requirements to join?</div>
+    <div class="faq-a">A: Upon joining, you must pay a non-refundable registration fee of <strong>Kshs. 100</strong> and deposit a refundable fee of <strong>Kshs. 500</strong> into the emergency kitty.</div>
+
+    <div class="faq-q">Q: How long do I have to wait before I can receive welfare benefits?</div>
+    <div class="faq-a">A: You must be a registered, contributing member for at least <strong>three (3) months</strong> before you are eligible to receive benefits.</div>
+
+    <div class="faq-q">Q: Can I lose my membership?</div>
+    <div class="faq-a">A: Yes. You can lose your membership if you fail to make contributions (depleting your emergency kitty), intentionally defraud the welfare, provide false information, or voluntarily withdraw in writing.</div>
+
+    <h2 id="article3">3. Scope of Coverage & Benefits</h2>
+    <div class="faq-q">Q: When an emergency happens, how much do I need to contribute?</div>
+    <div class="faq-a">A: Contributions vary strictly based on the emergency type as outlined in Article 3:
+        <table>
+            <thead>
+                <tr><th>Emergency Case</th><th>Contribution Required Per Member</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Death of a Principal Member</td><td>Kshs. 500</td></tr>
+                <tr><td>Death of a Spouse (Max 1)</td><td>Kshs. 500</td></tr>
+                <tr><td>Death of a Child (Max 4)</td><td>Kshs. 300</td></tr>
+                <tr><td>Death of a Parent/Guardian (Max 2)</td><td>Kshs. 200</td></tr>
+                <tr><td>Prolonged Chronic Disease (Principal)</td><td>Kshs. 400</td></tr>
+                <tr><td>Severe Accidents/Injuries (Principal)</td><td>Kshs. 400</td></tr>
+                <tr><td>Natural Calamities e.g., Fire (Principal)</td><td>Kshs. 400</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="faq-q">Q: How long do I have to make a contribution?</div>
+    <div class="faq-a">A: You have exactly <strong>seven (7) days</strong> from the time the welfare leadership officially announces the case to the members.</div>
+
+    <div class="faq-q">Q: How fast does the affected member receive the money?</div>
+    <div class="faq-a">A: The welfare guarantees that bereavement contributions will reach the affected member within a maximum of <strong>seven (7) days</strong> from the confirmation of the case. A maximum of 10% of the total collected may be used for transport/logistics for the visiting delegation.</div>
+
+    <h2 id="article4">4. Welfare Leadership & Elections</h2>
+    <div class="faq-q">Q: Who runs the welfare?</div>
+    <div class="faq-a">A: A 9-member Executive Committee consisting of the Chairperson, Vice Chairperson, Secretary, Vice Secretary, Treasurer, Organizing Secretary, Vice Organizing Secretary, and two Zonal Representatives. The composition must strictly adhere to the <strong>2/3 gender rule</strong>.</div>
+
+    <div class="faq-q">Q: How are leaders elected?</div>
+    <div class="faq-a">A: Leaders are elected via secret ballot during a general meeting. The candidate with the majority vote wins. Office bearers serve a term of <strong>two (2) years</strong> and are eligible for re-election.</div>
+
+    <div class="faq-q">Q: Who manages the elections?</div>
+    <div class="faq-a">A: An independent Election Board nominated and approved by the members. Members of the board serve for 3 years and are not allowed to run for any welfare office unless they resign from the board prior to the election.</div>
+
+    <h2 id="article5">5. Finances & Investments</h2>
+    <div class="faq-q">Q: How are the welfare's bank accounts managed?</div>
+    <div class="faq-a">A: The <strong>Chairperson, Secretary, and Treasurer</strong> are the mandatory signatories to the welfare's bank accounts. For any financial transaction to be valid, <strong>all three signatories must append their signature</strong>. Any transaction must be authorized by the management committee and minuted.</div>
+
+    <div class="faq-q">Q: How does the emergency kitty work?</div>
+    <div class="faq-a">A: The emergency kitty funds are used to caution a member in case of delay in contributions. After the delayed contribution is made by the member, the funds are refunded back into their emergency kitty.</div>
+
+    <div class="faq-q">Q: Does the welfare invest its money?</div>
+    <div class="faq-a">A: Yes. The leadership nominates an Investment Committee (approved by members) tasked with advising, managing, and reporting on investment projects to grow the welfare's resources.</div>
+
+    <h2 id="article6">6. Meetings & Activities</h2>
+    <div class="faq-q">Q: When do we hold our meetings?</div>
+    <div class="faq-a">A: 
+        <ul style="margin: 5px 0;">
+            <li><strong>Annual General Meeting (AGM):</strong> Held once a year during the third term of the academic year. (Requires 2 weeks' notice and a 2/3 quorum).</li>
+            <li><strong>Special Meetings:</strong> Called for urgent matters. (Requires 2 weeks' notice and a 1/2 quorum).</li>
+            <li><strong>Annual Get-Together:</strong> Organized once a year with a 1-month notice.</li>
+        </ul>
+    </div>
+
+    <h2 id="article7">7. Dispute Resolution & Dissolution</h2>
+    <div class="faq-q">Q: What happens if members disagree?</div>
+    <div class="faq-a">A: The constitution provides primary guidance. For complex disagreements, independent arbitrators may be involved to settle disputes.</div>
+
+    <div class="faq-q">Q: Can the welfare be dissolved?</div>
+    <div class="faq-a">A: Yes, if approved by more than 2/3 of registered members during an AGM/Special Meeting, or if ordered by a Kenyan court of law. Upon dissolution, all funds in the emergency kitty will be refunded to their respective owners.</div>
+
+    <h2 id="article8">8. Amendments & Legal Framework</h2>
+    <div class="faq-q">Q: Can the welfare constitution be changed?</div>
+    <div class="faq-a">A: Yes. Amendments can only be made through a majority vote during an AGM or Special Meeting. Proposed amendments must be shared with members at least <strong>two (2) weeks</strong> prior to voting.</div>
+
+    <div class="faq-q">Q: What happens if there is a legal contradiction in the rules?</div>
+    <div class="faq-a">A: In the event of any oversight, contradiction, or deficiency in the welfare's constitution, the laws of the Republic of Kenya shall take absolute precedence.</div>
+
+    <div style="border: 2px solid var(--primary); padding: 10px; background-color: #f8fafc; margin-top: 15px; border-radius: 8px; page-break-inside: avoid;">
+        <h2 style="color: var(--primary); border-bottom: 2px solid var(--primary); margin-top: 0;" id="bylaws">APPENDIX: OFFICIALS' BYLAWS (FOR OFFICIAL USE)</h2>
+        <p style="font-weight: bold; color: var(--primary); margin-bottom: 5px;">The following bylaws provide operational guidelines for use by the MAJUSTWE Executive Committee and Officials.</p>
+
+        <h3 style="color: var(--primary); margin-top: 10px;">1. Meeting Schedule</h3>
+        <p style="margin: 5px 0;">General meetings shall be held strictly on the <strong>first Saturday of every term</strong>.</p>
+
+        <h3 style="color: var(--primary); margin-top: 10px;">2. Benefit & Contribution Tiers</h3>
+        <p style="margin: 5px 0;">When a bereavement occurs, mandatory contributions are strictly categorized as follows:</p>
+        <ul style="margin: 5px 0;">
+            <li><strong>Loss of a Parent/Guardian:</strong> Ksh 200 per member.</li>
+            <li><strong>Loss of a Principal Member / Spouse:</strong> Ksh 500 per member.</li>
+        </ul>
+
+        <h3 style="color: var(--primary); margin-top: 10px;">3. Claim Verification & Payout</h3>
+        <p style="margin: 5px 0;">All bereavement claims must first be <strong>verified by the respective Zonal Representatives and the Secretary</strong> before any processing can occur.</p>
+        <p style="margin: 5px 0;">Once verified, the Treasurer is authorized to make an <strong>immediate 50% payout</strong> of the expected total to the bereaved member to assist with urgent logistics, prior to the collection of the remaining funds.</p>
+
+        <h3 style="color: var(--primary); margin-top: 10px;">4. Discipline & Code of Conduct</h3>
+        <ul style="margin: 5px 0;">
+            <li><strong>Absences:</strong> Fines will be strictly levied against members who are absent from scheduled meetings (the exact penalty structure is determined by the executive, e.g., a Ksh 1,000 fine for 3 consecutive absences without a valid apology).</li>
+            <li><strong>Conduct:</strong> Any member found in a state of inebriation during official welfare meetings or functions faces <strong>immediate expulsion</strong> from the welfare.</li>
+        </ul>
+    </div>
+
+</body>
+</html>
