@@ -59,9 +59,21 @@ const SecretaryDashboard: React.FC = () => {
       refreshData();
       setEditModalOpen(false);
       alert('Member updated successfully.');
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert('Failed to update member.');
+      let errorMsg = 'Failed to update member.';
+      if (e.response && e.response.data) {
+        if (typeof e.response.data === 'string') {
+           errorMsg = e.response.data;
+        } else if (e.response.data.id_number) {
+           errorMsg = 'ID Number Error: ' + e.response.data.id_number[0];
+        } else if (e.response.data.detail) {
+           errorMsg = e.response.data.detail;
+        } else {
+           errorMsg = JSON.stringify(e.response.data);
+        }
+      }
+      alert(errorMsg);
     }
   };
 

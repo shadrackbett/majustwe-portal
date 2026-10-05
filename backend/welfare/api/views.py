@@ -29,8 +29,13 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
         if 'id_number' in serializer.validated_data:
             new_id_number = serializer.validated_data['id_number']
             if profile.user.username != new_id_number:
-                profile.user.username = new_id_number
-                profile.user.save()
+                from django.db import IntegrityError
+                from rest_framework.exceptions import ValidationError
+                try:
+                    profile.user.username = new_id_number
+                    profile.user.save()
+                except IntegrityError:
+                    raise ValidationError({'id_number': 'This ID Number is already registered to another user account.'})
 
     def get_permissions(self):
         if self.action in ['secretary_approve', 'secretary_reject']:
@@ -260,14 +265,7 @@ class CaseViewSet(viewsets.ModelViewSet):
                 
         threading.Thread(target=send_case_email, args=(instance.title, instance.description, instance.required_amount, instance.deadline)).start()
         
-    def perform_update(self, serializer):
-        profile = serializer.save()
-        # If id_number was updated, sync it to the User's username
-        if 'id_number' in serializer.validated_data:
-            new_id_number = serializer.validated_data['id_number']
-            if profile.user.username != new_id_number:
-                profile.user.username = new_id_number
-                profile.user.save()
+
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -280,14 +278,7 @@ class ContributionViewSet(viewsets.ModelViewSet):
     queryset = Contribution.objects.all()
     serializer_class = ContributionSerializer
     
-    def perform_update(self, serializer):
-        profile = serializer.save()
-        # If id_number was updated, sync it to the User's username
-        if 'id_number' in serializer.validated_data:
-            new_id_number = serializer.validated_data['id_number']
-            if profile.user.username != new_id_number:
-                profile.user.username = new_id_number
-                profile.user.save()
+
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -334,14 +325,7 @@ class MinuteRecordViewSet(viewsets.ModelViewSet):
     queryset = MinuteRecord.objects.all().order_by('-date')
     serializer_class = MinuteRecordSerializer
     
-    def perform_update(self, serializer):
-        profile = serializer.save()
-        # If id_number was updated, sync it to the User's username
-        if 'id_number' in serializer.validated_data:
-            new_id_number = serializer.validated_data['id_number']
-            if profile.user.username != new_id_number:
-                profile.user.username = new_id_number
-                profile.user.save()
+
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
