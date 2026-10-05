@@ -52,7 +52,7 @@ const SecretaryDashboard: React.FC = () => {
       });
       
       // If the user changed their own role, update local context so UI reflects it immediately!
-      if (user && editingMember.user?.id === user.id && editingMember.user?.role !== user.role) {
+      if (user && Number(editingMember.user?.id) === Number(user.id) && editingMember.user?.role !== user.role) {
          login(localStorage.getItem('token') || '', user.id, editingMember.user.role, user.username);
       }
 

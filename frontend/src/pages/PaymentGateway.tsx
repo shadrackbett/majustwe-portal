@@ -15,7 +15,7 @@ const PaymentGateway: React.FC = () => {
   const [status, setStatus] = useState<'IDLE' | 'SUCCESS' | 'ERROR'>('IDLE');
 
   const caseObj = cases.find(c => c.id === Number(caseId));
-  const memberObj = members.find(m => m.user?.id === user?.id);
+  const memberObj = members.find(m => Number(m.user?.id) === Number(user?.id));
   const contribution = contributions.find(c => c.welfare_case === Number(caseId) && c.member === memberObj?.id);
 
   // Extract Treasurer Number from Case Description if it exists

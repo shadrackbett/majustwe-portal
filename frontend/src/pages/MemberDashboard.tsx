@@ -16,7 +16,7 @@ const MemberDashboard: React.FC = () => {
   const [passwordMessage, setPasswordMessage] = useState('');
   
   // Use the ID from AuthContext, otherwise fallback to the first active incomplete member or default
-  const profile = members.find(m => m.user?.id === user?.id || m.id === user?.id) || members[0];
+  const profile = members.find(m => Number(m.user?.id) === Number(user?.id) || Number(m.id) === Number(user?.id)) || members[0];
 
 
   

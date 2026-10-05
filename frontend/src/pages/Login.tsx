@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     setError('');
     
     try {
-      const response = await api.post('/auth/token/', { username, password });
+      const response = await api.post('/auth/token/', { username: username.trim(), password: password.trim() });
       const token = response.data.access;
       const decoded: any = jwt_decode(token);
       
