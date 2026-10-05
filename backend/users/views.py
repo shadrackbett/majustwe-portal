@@ -202,8 +202,10 @@ class PasswordResetConfirmView(APIView):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            return Response({'detail': 'Invalid reset link.'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response({'detail': f'User not found for uid: {uidb64}'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'detail': f'Decode error for uid {uidb64}: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
             
         if not default_token_generator.check_token(user, token):
             return Response({'detail': 'Reset link is invalid or has expired.'}, status=status.HTTP_400_BAD_REQUEST)
