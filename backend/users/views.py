@@ -7,6 +7,26 @@ from rest_framework.permissions import AllowAny
 
 User = get_user_model()
 
+class CleanupTestUsersView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def get(self, request):
+        from django.contrib.auth import get_user_model
+        from django.db.models import Q
+        User = get_user_model()
+        test_users = User.objects.filter(
+            Q(username__startswith='9999') | 
+            Q(username__startswith='1234') |
+            Q(username__icontains='test') |
+            Q(first_name__icontains='test') |
+            Q(last_name__icontains='test')
+        ).exclude(is_superuser=True)
+        
+        count = test_users.count()
+        usernames = [u.username for u in test_users]
+        test_users.delete()
+        return Response({'deleted': count, 'usernames': usernames})
+
 class CleanupOrphansView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
