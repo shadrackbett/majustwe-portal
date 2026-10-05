@@ -14,12 +14,12 @@ from .permissions import IsTreasurer, IsSecretary, IsExecutive, IsGenericOfficia
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .models import MemberProfile
+from welfare.models import MemberProfile
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .models import MemberProfile
+from welfare.models import MemberProfile
 
 class BulkUpdateProfilesView(APIView):
     authentication_classes = []
