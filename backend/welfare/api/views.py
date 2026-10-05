@@ -91,9 +91,9 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[IsOwnerOrExecutive])
     def submit_details(self, request, pk=None):
         profile = self.get_object()
-        # Allows submitting details if ACTIVE_INCOMPLETE or ACTIVE
+        # Allows submitting details if PENDING_TREASURER, ACTIVE_INCOMPLETE, or ACTIVE
         if not request.user.is_executive():
-            if profile.status not in [MemberProfile.Status.ACTIVE_INCOMPLETE, MemberProfile.Status.ACTIVE]:
+            if profile.status not in [MemberProfile.Status.PENDING_TREASURER, MemberProfile.Status.ACTIVE_INCOMPLETE, MemberProfile.Status.ACTIVE]:
                 return Response({'error': 'Profile not in correct state'}, status=status.HTTP_400_BAD_REQUEST)
             
         # Parse extra details
