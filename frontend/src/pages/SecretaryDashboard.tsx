@@ -66,7 +66,7 @@ const SecretaryDashboard: React.FC = () => {
         if (typeof e.response.data === 'string') {
            errorMsg = e.response.data;
         } else if (e.response.data.id_number) {
-           errorMsg = 'ID Number Error: ' + e.response.data.id_number[0];
+           errorMsg = 'ID Number Error: ' + (Array.isArray(e.response.data.id_number) ? e.response.data.id_number[0] : e.response.data.id_number);
         } else if (e.response.data.detail) {
            errorMsg = e.response.data.detail;
         } else {
