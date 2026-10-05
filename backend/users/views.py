@@ -7,26 +7,6 @@ from rest_framework.permissions import AllowAny
 
 User = get_user_model()
 
-class CleanupTestUsersView(APIView):
-    authentication_classes = []
-    permission_classes = [AllowAny]
-    def get(self, request):
-        from django.contrib.auth import get_user_model
-        from django.db.models import Q
-        User = get_user_model()
-        test_users = User.objects.filter(
-            Q(username__startswith='9999') | 
-            Q(username__startswith='1234') |
-            Q(username__icontains='test') |
-            Q(first_name__icontains='test') |
-            Q(last_name__icontains='test')
-        ).exclude(is_superuser=True)
-        
-        count = test_users.count()
-        usernames = [u.username for u in test_users]
-        test_users.delete()
-        return Response({'deleted': count, 'usernames': usernames})
-
 class CleanupOrphansView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
@@ -163,45 +143,6 @@ class PasswordResetRequestView(APIView):
             print(f"Failed to send email: {e}")
             
         return Response({'detail': 'If an account with this ID Number exists and has a registered email, a reset link has been sent.'})
-
-class UpdateAdminView(APIView):
-    authentication_classes = []
-    permission_classes = [AllowAny]
-    def post(self, request):
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        
-        user = User.objects.get(username='37469219')
-        user.email = request.data.get('email', user.email)
-        if request.data.get('password'):
-            user.set_password(request.data.get('password'))
-        user.save()
-        return Response({'success': True, 'email': user.email})
-
-class TestTokenView(APIView):
-    authentication_classes = []
-    permission_classes = [AllowAny]
-    def post(self, request):
-        from django.contrib.auth import get_user_model
-        from django.contrib.auth.tokens import default_token_generator
-        from django.utils.http import urlsafe_base64_encode
-        from django.utils.encoding import force_bytes
-        User = get_user_model()
-        
-        username = request.data.get('username')
-        user = User.objects.get(username=username)
-        
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = default_token_generator.make_token(user)
-        
-        is_valid = default_token_generator.check_token(user, token)
-        
-        return Response({
-            'uid': uid,
-            'token': token,
-            'is_valid_immediately': is_valid,
-            'user_email': user.email
-        })
 
 class PasswordResetConfirmView(APIView):
     permission_classes = [permissions.AllowAny]

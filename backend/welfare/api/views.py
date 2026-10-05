@@ -90,6 +90,13 @@ class MemberProfileViewSet(viewsets.ModelViewSet):
         # Parse extra details
         profile.spouse_name = request.data.get('spouse_name', profile.spouse_name)
         profile.spouse_phone = request.data.get('spouse_phone', profile.spouse_phone)
+        profile.phone = request.data.get('phone', profile.phone)
+        
+        # Update User email if provided
+        new_email = request.data.get('email')
+        if new_email is not None and new_email != profile.user.email:
+            profile.user.email = new_email
+            profile.user.save()
         
         # Save Guardians - only if they don't exist yet, or if the user is an Executive
         existing_guardians_count = Guardian.objects.filter(profile=profile).count()
